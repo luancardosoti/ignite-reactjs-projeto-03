@@ -5,26 +5,76 @@ export const TransactionContainer = styled.main`
   max-width: 1120px;
   margin: 4rem auto 0;
   padding: 0 1.5rem;
+  padding-bottom: 6rem;
+
+  .contrainerTable {
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+  }
 `
 
 export const TransactionsTable = styled.table`
   width: 100%;
-  border-collapse: separate;
-  border-spacing: 0 0.5rem;
+  border-spacing: 0;
+  border-collapse: collapse;
   margin-top: 1.5rem;
 
-  td {
-    padding: 1.25rem 2rem;
-    background: ${(props) => props.theme['gray-700']};
-
-    &:first-child {
-      border-top-left-radius: 6px;
-      border-bottom-left-radius: 6px;
+  tr {
+    :not(:first-child) {
+      margin-top: 0.5rem;
     }
 
-    &:last-child {
-      border-top-right-radius: 6px;
-      border-bottom-right-radius: 6px;
+    background: ${(props) => props.theme['gray-700']};
+    padding: 1.25rem 2rem;
+    border-radius: 6px;
+
+    display: grid;
+    align-items: center;
+    grid-template-columns: 2.5fr 1fr 1fr 1fr 2rem;
+    column-gap: 0.5rem;
+
+    td {
+      width: 100%;
+      :nth-child(2),
+      :nth-child(4) {
+        white-space: nowrap;
+      }
+
+      :nth-child(2) {
+        text-align: right;
+      }
+
+      &.btnDelete {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        button {
+          width: 20px;
+          height: 20px;
+
+          cursor: pointer;
+          background: none;
+          border: 0;
+          padding: 0;
+        }
+      }
+    }
+  }
+
+  @media screen and (max-width: 800px) {
+    /* width: 800px; */
+
+    tr {
+      grid-template-columns:
+        minmax(160px, 1.5fr) minmax(120px, 1fr) minmax(120px, 1fr)
+        1fr 2rem;
+      column-gap: 1rem;
+
+      td::fisrt-child {
+        color: red;
+      }
     }
   }
 `

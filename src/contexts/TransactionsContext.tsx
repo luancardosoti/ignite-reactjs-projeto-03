@@ -1,27 +1,15 @@
 import { ReactNode, useEffect, useState, useCallback } from 'react'
 import { createContext } from 'use-context-selector'
-import { api } from '../lib/axios'
-
-interface Transaction {
-  id: number
-  description: string
-  type: 'income' | 'outcome'
-  category: string
-  price: number
-  createdAt: string
-}
-
-interface CreateTransactionDTO {
-  category: string
-  description: string
-  price: number
-  type: 'income' | 'outcome'
-}
+import { HttpTransactions } from '../data/HttpTransactions'
+import { CreateTransactionDTO, Transaction } from '../data/IDataTransactions'
+import { LocalStorageTransactions } from '../data/LocalStorageTransactions'
+import { priceFormatter } from '../utils/formatter'
 
 interface TransactionsContextType {
   transactions: Transaction[]
   fetchTransactions: (query?: string) => Promise<void>
   createTransaction: (data: CreateTransactionDTO) => Promise<void>
+  deleteTransaction: (data: Transaction) => Promise<void>
 }
 
 interface TransactionsProviderProps {
@@ -30,33 +18,47 @@ interface TransactionsProviderProps {
 
 export const TransactionsContext = createContext({} as TransactionsContextType)
 
+const DataTransactions = {
+  development: () => new HttpTransactions(),
+  production: () => new LocalStorageTransactions(),
+}
+
 export function TransactionsProvider({ children }: TransactionsProviderProps) {
+  const mode = import.meta.env.MODE
+
   const [transactions, setTransactions] = useState<Transaction[]>([])
+  const dataTransactions =
+    mode === 'production'
+      ? DataTransactions.production()
+      : DataTransactions.development()
 
   const fetchTransactions = useCallback(async (query?: string) => {
-    const response = await api.get('transactions', {
-      params: {
-        _sort: 'createdAt',
-        _order: 'desc',
-        q: query,
-      },
-    })
+    const transactions = await dataTransactions.fetchTransactions(query)
 
-    setTransactions(response.data)
+    setTransactions(transactions)
   }, [])
 
   const createTransaction = useCallback(async (data: CreateTransactionDTO) => {
-    const { category, description, price, type } = data
+    const transaction = await dataTransactions.createTransaction(data)
 
-    const response = await api.post('transactions', {
-      category,
-      description,
-      price,
-      type,
-      createdAt: new Date().toISOString(),
-    })
+    setTransactions((state) => [transaction, ...state])
+  }, [])
 
-    setTransactions((state) => [response.data, ...state])
+  const deleteTransaction = useCallback(async (data: Transaction) => {
+    const { id, description, price } = data
+
+    const confirmDeleteTransaction = window.confirm(
+      `Você realmente deseja apagar a transação: '${description}' no valor de '${priceFormatter.format(
+        price,
+      )}'?`,
+    )
+
+    if (confirmDeleteTransaction) {
+      await dataTransactions.deleteTransaction(data.id)
+      setTransactions((state) =>
+        state.filter((transaction) => transaction.id !== id),
+      )
+    }
   }, [])
 
   useEffect(() => {
@@ -65,7 +67,12 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
 
   return (
     <TransactionsContext.Provider
-      value={{ transactions, fetchTransactions, createTransaction }}
+      value={{
+        transactions,
+        fetchTransactions,
+        createTransaction,
+        deleteTransaction,
+      }}
     >
       {children}
     </TransactionsContext.Provider>

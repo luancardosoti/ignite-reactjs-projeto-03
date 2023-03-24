@@ -7,7 +7,7 @@ export function Summary() {
   const { income, outcome, total } = useSummary()
 
   return (
-    <SummaryContainer>
+    <SummaryContainer className="scrollbar">
       <SummaryCard>
         <header>
           <span>Entradas</span>

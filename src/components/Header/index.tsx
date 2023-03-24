@@ -3,19 +3,24 @@ import { HeaderContainer, HeaderContent, NewTransactionButton } from './styles'
 
 import logoImg from '../../assets/logo.svg'
 import { NewTransactionModal } from '../NewTransactionModal'
+import { useState } from 'react'
 
 export function Header() {
+  const [openModal, setOpenModal] = useState(false)
+
   return (
     <HeaderContainer>
       <HeaderContent>
         <img src={logoImg} alt="" />
 
-        <Dialog.Root>
+        <Dialog.Root open={openModal}>
           <Dialog.Trigger asChild>
-            <NewTransactionButton>Nova Transação</NewTransactionButton>
+            <NewTransactionButton onClick={() => setOpenModal(true)}>
+              Nova Transação
+            </NewTransactionButton>
           </Dialog.Trigger>
 
-          <NewTransactionModal />
+          <NewTransactionModal closeModal={() => setOpenModal(false)} />
         </Dialog.Root>
       </HeaderContent>
     </HeaderContainer>
