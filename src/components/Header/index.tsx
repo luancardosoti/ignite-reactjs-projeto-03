@@ -13,7 +13,7 @@ export function Header() {
       <HeaderContent>
         <img src={logoImg} alt="" />
 
-        <Dialog.Root open={openModal}>
+        <Dialog.Root open={openModal} onOpenChange={setOpenModal}>
           <Dialog.Trigger asChild>
             <NewTransactionButton onClick={() => setOpenModal(true)}>
               Nova Transação

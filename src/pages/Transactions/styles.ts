@@ -36,14 +36,6 @@ export const TransactionsTable = styled.table`
 
     td {
       width: 100%;
-      :nth-child(2),
-      :nth-child(4) {
-        white-space: nowrap;
-      }
-
-      :nth-child(2) {
-        text-align: right;
-      }
 
       &.btnDelete {
         display: flex;
@@ -59,6 +51,11 @@ export const TransactionsTable = styled.table`
           border: 0;
           padding: 0;
         }
+      }
+
+      :nth-child(2),
+      :nth-child(4) {
+        white-space: nowrap;
       }
     }
   }

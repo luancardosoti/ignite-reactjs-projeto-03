@@ -56,7 +56,7 @@ export function NewTransactionModal({ closeModal }: NewTransactionModalProps) {
 
       <Content>
         <Dialog.Title>Nova Transação</Dialog.Title>
-        <CloseButton>
+        <CloseButton onClick={closeModal}>
           <X size={24} />
         </CloseButton>
 
