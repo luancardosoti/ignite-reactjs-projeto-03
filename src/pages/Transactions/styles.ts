@@ -12,6 +12,10 @@ export const TransactionContainer = styled.main`
     overflow-x: auto;
     padding-bottom: 0.5rem;
   }
+
+  @media screen and (max-width: 800px) {
+    margin-top: 2rem;
+  }
 `
 
 export const TransactionsTable = styled.table`
@@ -61,8 +65,6 @@ export const TransactionsTable = styled.table`
   }
 
   @media screen and (max-width: 800px) {
-    /* width: 800px; */
-
     tr {
       grid-template-columns:
         minmax(160px, 1.5fr) minmax(120px, 1fr) minmax(120px, 1fr)
